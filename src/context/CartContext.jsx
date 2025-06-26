@@ -44,6 +44,10 @@ export const CartProvider = ({ children }) => {
         )
       );
     }
+  };  
+
+  const clearCart = () => {
+    setCartItems([]);
   };
 
   // Giá trị sẽ được cung cấp cho các component con
@@ -52,6 +56,8 @@ export const CartProvider = ({ children }) => {
     addToCart,
     removeFromCart,
     updateQuantity,
+    cartTotal: cartItems.reduce((total, item) => total + item.price * item.quantity, 0),
+    clearCart, // <-- Thêm hàm này vào context value
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

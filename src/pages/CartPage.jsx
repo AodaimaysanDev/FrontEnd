@@ -63,9 +63,9 @@ const CartPage = () => {
               <span>Thành tiền</span>
               <span>{formatPrice(cartTotal)}</span>
             </div>
-            <button className="w-full bg-green-500 text-white mt-6 py-3 rounded-lg font-bold hover:bg-green-600">
-              Tiến hành thanh toán
-            </button>
+            <Link to="/checkout" className="block text-center w-full bg-green-500 text-white mt-6 py-3 rounded-lg font-bold hover:bg-green-600">
+                Tiến hành thanh toán
+            </Link>
           </div>
         </div>
       </div>
