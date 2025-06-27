@@ -15,7 +15,7 @@ const ProductsPage = () => {
 
   const fetchWithFallback = async (path, config) => {
     try {
-      return await axios.get(`http://localhost:8080${path}`, config);
+      return await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, config);
     } catch {
       return await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, config);
     }

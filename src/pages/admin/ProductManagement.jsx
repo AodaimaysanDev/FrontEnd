@@ -16,8 +16,8 @@ const ProductManagement = () => {
 
   const fetchWithFallback = async (method, path, data, config) => {
     try {
-      if (method === 'get') return await axios.get(`http://localhost:8080${path}`, config);
-      if (method === 'delete') return await axios.delete(`http://localhost:8080${path}`, config);
+      if (method === 'get') return await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, config);
+      if (method === 'delete') return await axios.delete(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, config);
     } catch {
       if (method === 'get') return await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, config);
       if (method === 'delete') return await axios.delete(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, config);

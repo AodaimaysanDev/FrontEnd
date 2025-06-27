@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }) => {
   
   const fetchWithFallback = async (path, data) => {
     try {
-      return await axios.post(`http://localhost:8080${path}`, data);
+      return await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, data);
     } catch {
       return await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, data);
     }
