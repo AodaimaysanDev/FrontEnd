@@ -10,11 +10,21 @@ const OrderManagement = () => {
   const [error, setError] = useState(null);
   const { token } = useAuth();
 
+  const fetchWithFallback = async (method, path, data, config) => {
+    try {
+      if (method === 'get') return await axios.get(`http://localhost:8080${path}`, config);
+      if (method === 'put') return await axios.put(`http://localhost:8080${path}`, data, config);
+    } catch {
+      if (method === 'get') return await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, config);
+      if (method === 'put') return await axios.put(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, data, config);
+    }
+  };
+
   const fetchOrders = async () => {
     try {
       setLoading(true);
       const config = { headers: { Authorization: `Bearer ${token}` } };
-      const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/api/orders`, config);
+      const { data } = await fetchWithFallback('get', '/api/orders', null, config);
       setOrders(data.orders);
       setError(null);
     } catch (err) {
@@ -35,7 +45,7 @@ const OrderManagement = () => {
     }
     try {
       const config = { headers: { Authorization: `Bearer ${token}` } };
-      await axios.put(`${import.meta.env.VITE_BACKEND_API_URL}/api/orders/${orderId}`, { status: newStatus }, config);
+      await fetchWithFallback('put', `/api/orders/${orderId}`, { status: newStatus }, config);
       alert('Cập nhật trạng thái thành công!');
       fetchOrders(); // Tải lại danh sách
     } catch (err) {

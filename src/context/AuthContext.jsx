@@ -51,9 +51,17 @@ export const AuthProvider = ({ children }) => {
     initializeAuth();
   }, [token]);
   
+  const fetchWithFallback = async (path, data) => {
+    try {
+      return await axios.post(`http://localhost:8080${path}`, data);
+    } catch {
+      return await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, data);
+    }
+  };
+
   const login = async (email, password) => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/api/auth/login`, { email, password });
+      const response = await fetchWithFallback('/api/auth/login', { email, password });
       setToken(response.data.token);
       // Kiểm tra vai trò và chuyển hướng
       const decodedUser = jwtDecode(response.data.token);
@@ -70,7 +78,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (username, name, email, password) => {
     try {
-      await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/api/auth/register`, { username, name, email, password });
+      await fetchWithFallback('/api/auth/register', { username, name, email, password });
       alert('Đăng ký thành công! Vui lòng đăng nhập.');
       navigate('/login');
     } catch (error) {

@@ -22,12 +22,20 @@ const AdminDashboard = () => {
   const [error, setError] = useState(null);
   const { token } = useAuth();
 
+  const fetchWithFallback = async (path, config) => {
+    try {
+      return await axios.get(`http://localhost:8080${path}`, config);
+    } catch {
+      return await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, config);
+    }
+  };
+
   useEffect(() => {
     const fetchStats = async () => {
       try {
         setLoading(true);
         const config = { headers: { Authorization: `Bearer ${token}` } };
-        const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/api/stats`, config);
+        const { data } = await fetchWithFallback('/api/stats', config);
         
         if (data.success) {
           setStats(data.stats);

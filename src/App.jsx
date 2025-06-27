@@ -17,12 +17,14 @@ import RegisterPage from './pages/RegisterPage';
 import CheckoutPage from './pages/CheckoutPage';
 import OrderSuccessPage from './pages/OrderSuccessPage';
 import ProfilePage from './pages/ProfilePage';
+import BookAppointmentPage from './pages/BookAppointmentPage';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
 import ProductManagement from './pages/admin/ProductManagement';
 import OrderManagement from './pages/admin/OrderManagement'; 
 import OrderDetailPage from './pages/OrderDetailPage';
+import AppointmentManagement from './pages/admin/AppointmentManagement';
 
 function App() {
   return (
@@ -35,6 +37,7 @@ function App() {
           <Route path="products" element={<ProductManagement />} />
           <Route path="orders" element={<OrderManagement />} /> {/* <-- Route mới */}
           <Route path="order/:id" element={<OrderDetailPage />} />
+          <Route path="appointments" element={<AppointmentManagement />} />
         </Route>
       </Route>
 
@@ -52,6 +55,7 @@ function App() {
             <Route path="order-success" element={<OrderSuccessPage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="order/:id" element={<OrderDetailPage />} />
+            <Route path="book-appointment" element={<BookAppointmentPage />} />
         </Route>
         
         <Route path="*" element={<div>404 - Trang không tồn tại</div>} />

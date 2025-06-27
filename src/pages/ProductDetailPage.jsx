@@ -16,11 +16,19 @@ const ProductDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const fetchWithFallback = async (path, config) => {
+    try {
+      return await axios.get(`http://localhost:8080${path}`, config);
+    } catch {
+      return await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, config);
+    }
+  };
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/api/products/${id}`);
+        const response = await fetchWithFallback(`/api/products/${id}`);
         setProduct(response.data);
       } catch (err) {
         setError('Không tìm thấy sản phẩm hoặc đã có lỗi xảy ra.');

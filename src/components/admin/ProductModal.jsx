@@ -36,6 +36,16 @@ const ProductModal = ({ product, onClose, onSuccess }) => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const fetchWithFallback = async (method, path, data, config) => {
+    try {
+      if (method === 'put') return await axios.put(`http://localhost:8080${path}`, data, config);
+      if (method === 'post') return await axios.post(`http://localhost:8080${path}`, data, config);
+    } catch {
+      if (method === 'put') return await axios.put(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, data, config);
+      if (method === 'post') return await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, data, config);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -47,10 +57,10 @@ const ProductModal = ({ product, onClose, onSuccess }) => {
       };
       
       if (product) {
-        await axios.put(`${import.meta.env.VITE_BACKEND_API_URL}/api/products/${product._id}`, formData, config);
+        await fetchWithFallback('put', `/api/products/${product._id}`, formData, config);
         alert('Cập nhật sản phẩm thành công!');
       } else {
-        await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/api/products`, formData, config);
+        await fetchWithFallback('post', '/api/products', formData, config);
         alert('Thêm sản phẩm mới thành công!');
       }
       onSuccess();

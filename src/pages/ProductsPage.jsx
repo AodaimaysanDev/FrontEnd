@@ -13,11 +13,19 @@ const ProductsPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('Tất cả');
   const [categories, setCategories] = useState([]);
 
+  const fetchWithFallback = async (path, config) => {
+    try {
+      return await axios.get(`http://localhost:8080${path}`, config);
+    } catch {
+      return await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, config);
+    }
+  };
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/api/products`);
+        const response = await fetchWithFallback('/api/products');
         setProducts(response.data);
         // Lấy danh sách danh mục duy nhất từ sản phẩm
         const uniqueCategories = Array.from(new Set(response.data.map(p => p.category).filter(Boolean)));

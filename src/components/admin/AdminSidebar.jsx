@@ -34,7 +34,12 @@ const AdminSidebar = () => {
             </li>
             <li className="mb-2">
               <NavLink to="/admin/orders" style={({isActive}) => isActive ? activeStyle : undefined} className="block px-4 py-2 rounded-md hover:bg-gray-700 transition-colors">
-                Quản lý Đơn hàng {/* <-- Link mới */}
+                Quản lý Đơn hàng
+              </NavLink>
+            </li>
+            <li className="mb-2">
+              <NavLink to="/admin/appointments" style={({isActive}) => isActive ? activeStyle : undefined} className="block px-4 py-2 rounded-md hover:bg-gray-700 transition-colors">
+                Quản lý Lịch hẹn
               </NavLink>
             </li>
           </ul>

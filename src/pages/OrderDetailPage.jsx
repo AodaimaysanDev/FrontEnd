@@ -12,12 +12,20 @@ const OrderDetailPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const fetchWithFallback = async (path, config) => {
+        try {
+            return await axios.get(`http://localhost:8080${path}`, config);
+        } catch {
+            return await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, config);
+        }
+    };
+
     useEffect(() => {
         const fetchOrderDetails = async () => {
             try {
                 setLoading(true);
                 const config = { headers: { Authorization: `Bearer ${token}` } };
-                const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/api/orders/${id}`, config);
+                const { data } = await fetchWithFallback(`/api/orders/${id}`, config);
                 if (data.success) {
                     setOrder(data.order);
                 } else {

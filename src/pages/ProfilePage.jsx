@@ -8,12 +8,21 @@ const ProfilePage = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user, token } = useAuth();
+  const [appointments, setAppointments] = useState([]);
   
+  const fetchWithFallback = async (path, config) => {
+    try {
+      return await axios.get(`http://localhost:8080${path}`, config);
+    } catch {
+      return await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, config);
+    }
+  };
+
   useEffect(() => {
     const fetchMyOrders = async () => {
       try {
         const config = { headers: { Authorization: `Bearer ${token}` } };
-        const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/api/orders/myorders`, config);
+        const { data } = await fetchWithFallback('/api/orders/myorders', config);
         setOrders(data.orders);
       } catch (error) {
         console.error("Lỗi khi lấy lịch sử đơn hàng:", error);
@@ -22,6 +31,18 @@ const ProfilePage = () => {
       }
     };
     fetchMyOrders();
+  }, [token]);
+
+  useEffect(() => {
+    // Lấy lịch hẹn của user
+    const fetchAppointments = async () => {
+      try {
+        const config = { headers: { Authorization: `Bearer ${token}` } };
+        const { data } = await fetchWithFallback('/api/appointments/my', config);
+        setAppointments(data.appointments);
+      } catch {}
+    };
+    fetchAppointments();
   }, [token]);
 
   const formatPrice = (price) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
@@ -51,6 +72,16 @@ const ProfilePage = () => {
             </Link>
           ))}
         </div>
+      )}
+      <h3 className="text-xl font-semibold mt-8 mb-2">Lịch hẹn của bạn</h3>
+      {appointments.length === 0 ? <div>Chưa có lịch hẹn nào.</div> : (
+        <ul className="divide-y">
+          {appointments.map(a => (
+            <li key={a._id} className="py-2">
+              <span className="font-medium">{a.date} {a.time}</span> - {a.name} - {a.phone} - {a.note} <span className="ml-2 text-sm text-gray-500">({a.status})</span>
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );

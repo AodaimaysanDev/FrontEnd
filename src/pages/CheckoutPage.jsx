@@ -19,6 +19,14 @@ const CheckoutPage = () => {
     setShippingInfo({ ...shippingInfo, [e.target.name]: e.target.value });
   };
 
+  const fetchWithFallback = async (path, data, config) => {
+    try {
+      return await axios.post(`http://localhost:8080${path}`, data, config);
+    } catch {
+      return await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, data, config);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -40,7 +48,7 @@ const CheckoutPage = () => {
           Authorization: `Bearer ${token}`,
         },
       };
-      await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/api/orders`, orderData, config);
+      await fetchWithFallback('/api/orders', orderData, config);
       clearCart();
       navigate('/order-success');
     } catch (error) {

@@ -60,7 +60,11 @@ const Navbar = () => {
                         <NavLink to="/products" style={({ isActive }) => (isActive ? activeLinkStyle : undefined)} className="text-gray-600 hover:text-blue-600 transition-colors">
                             Sản Phẩm
                         </NavLink>
-                        {/* Thêm link Admin nếu user là admin */}
+                        {isAuthenticated && (
+                            <NavLink to="/book-appointment" style={({ isActive }) => (isActive ? activeLinkStyle : undefined)} className="text-gray-600 hover:text-blue-600 transition-colors">
+                                Đặt lịch hẹn
+                            </NavLink>
+                        )}
                         {isAuthenticated && user?.role === 'admin' && (
                              <NavLink to="/admin" style={({ isActive }) => (isActive ? activeLinkStyle : undefined)} className="text-gray-600 hover:text-blue-600 transition-colors">
                                 Admin Panel

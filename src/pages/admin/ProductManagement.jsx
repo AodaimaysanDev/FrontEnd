@@ -14,10 +14,20 @@ const ProductManagement = () => {
 
   const { token } = useAuth();
 
+  const fetchWithFallback = async (method, path, data, config) => {
+    try {
+      if (method === 'get') return await axios.get(`http://localhost:8080${path}`, config);
+      if (method === 'delete') return await axios.delete(`http://localhost:8080${path}`, config);
+    } catch {
+      if (method === 'get') return await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, config);
+      if (method === 'delete') return await axios.delete(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, config);
+    }
+  };
+
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/api/products`);
+      const response = await fetchWithFallback('get', '/api/products');
       setProducts(response.data);
       setError(null);
     } catch (err) {
@@ -45,7 +55,7 @@ const ProductManagement = () => {
   const handleDelete = async (productId) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?')) {
       try {
-        await axios.delete(`${import.meta.env.VITE_BACKEND_API_URL}/api/products/${productId}`, {
+        await fetchWithFallback('delete', `/api/products/${productId}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         alert('Sản phẩm đã được xóa thành công!');
