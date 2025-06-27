@@ -10,6 +10,8 @@ const ProductsPage = () => {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(30);
+  const [selectedCategory, setSelectedCategory] = useState('Tất cả');
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -17,6 +19,9 @@ const ProductsPage = () => {
         setLoading(true);
         const response = await axios.get('http://localhost:8080/api/products');
         setProducts(response.data);
+        // Lấy danh sách danh mục duy nhất từ sản phẩm
+        const uniqueCategories = Array.from(new Set(response.data.map(p => p.category).filter(Boolean)));
+        setCategories(uniqueCategories);
         setError(null);
       } catch (err) {
         console.error("Lỗi khi fetch sản phẩm:", err);
@@ -28,9 +33,14 @@ const ProductsPage = () => {
     fetchProducts();
   }, []);
 
+  // Lọc sản phẩm theo danh mục
+  const filteredProducts = selectedCategory === 'Tất cả'
+    ? products
+    : products.filter(product => product.category === selectedCategory);
+
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
   const paginate = pageNumber => setCurrentPage(pageNumber);
 
   if (loading) {
@@ -46,6 +56,22 @@ const ProductsPage = () => {
       <h1 className="text-3xl md:text-4xl font-bold mb-8 text-gray-800 border-l-4 border-blue-600 pl-4">
         Tất Cả Sản Phẩm
       </h1>
+      {/* Dropdown chọn danh mục */}
+      <div className="mb-6 flex justify-end">
+        <select
+          className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          value={selectedCategory}
+          onChange={e => {
+            setSelectedCategory(e.target.value);
+            setCurrentPage(1); // Reset về trang đầu khi đổi danh mục
+          }}
+        >
+          <option value="Tất cả">Tất cả</option>
+          {categories.map(category => (
+            <option key={category} value={category}>{category}</option>
+          ))}
+        </select>
+      </div>
       {currentProducts.length > 0 ? (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
@@ -55,7 +81,7 @@ const ProductsPage = () => {
           </div>
           <Pagination
             productsPerPage={productsPerPage}
-            totalProducts={products.length}
+            totalProducts={filteredProducts.length}
             paginate={paginate}
             currentPage={currentPage}
           />

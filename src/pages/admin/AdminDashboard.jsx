@@ -1,51 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
+import Spinner from '../../components/Spinner';
 
-// Một component nhỏ để hiển thị từng thẻ thống kê
-const StatCard = ({ title, value, icon, colorClass }) => (
-  <div className={`bg-white p-6 rounded-lg shadow-md flex items-center ${colorClass}`}>
-    <div className="mr-4 text-4xl">{icon}</div>
-    <div>
-      <p className="text-lg font-semibold text-gray-700">{title}</p>
-      <p className="text-3xl font-bold">{value}</p>
+// Một component con để hiển thị từng thẻ thống kê cho gọn
+const StatCard = ({ title, value, icon, color }) => {
+  return (
+    <div className={`bg-white p-6 rounded-lg shadow-md flex items-center border-l-4 ${color}`}>
+      <div className="mr-4 text-3xl">{icon}</div>
+      <div>
+        <p className="text-sm text-gray-500 font-medium">{title}</p>
+        <p className="text-2xl font-bold text-gray-800">{value}</p>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const AdminDashboard = () => {
-  const [stats, setStats] = useState({
-    userCount: 0,
-    productCount: 0,
-    orderCount: 0, // Sẽ được cập nhật khi có API đơn hàng
-  });
+  const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { token } = useAuth();
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
         setLoading(true);
-        // Trong tương lai, bạn sẽ tạo các API riêng để lấy các con số này.
-        // Hiện tại, chúng ta sẽ gọi API có sẵn và giả lập các số liệu khác.
+        const config = { headers: { Authorization: `Bearer ${token}` } };
+        const { data } = await axios.get('http://localhost:8080/api/stats', config);
         
-        // 1. Lấy số lượng sản phẩm (thật)
-        const productResponse = await axios.get('http://localhost:8080/api/products');
-        const productCount = productResponse.data.length;
-        
-        // 2. Giả lập API lấy số lượng người dùng và đơn hàng
-        // (Khi có API, bạn sẽ thay thế các dòng này bằng axios.get)
-        const userCount = 12; // Giả lập
-        const orderCount = 58; // Giả lập
-
-        setStats({
-          userCount: userCount,
-          productCount: productCount,
-          orderCount: orderCount,
-        });
-
-      } catch (error) {
-        console.error("Lỗi khi tải dữ liệu thống kê:", error);
+        if (data.success) {
+          setStats(data.stats);
+        } else {
+          setError("Không thể tải dữ liệu thống kê.");
+        }
+      } catch (err) {
+        console.error("Lỗi khi fetch thống kê:", err);
+        setError("Đã có lỗi xảy ra khi tải dữ liệu.");
       } finally {
         setLoading(false);
       }
@@ -54,33 +45,45 @@ const AdminDashboard = () => {
     fetchStats();
   }, [token]);
 
+  const formatPrice = (price) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
+
+  if (loading) return <Spinner />;
+  if (error) return <p className="text-red-500 text-center">{error}</p>;
+
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6">Tổng quan</h1>
-      {loading ? (
-        <p>Đang tải dữ liệu...</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <StatCard 
-            title="Tổng số người dùng" 
-            value={stats.userCount} 
-            icon="👥" 
-            colorClass="border-l-4 border-blue-500"
+      <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+      
+      {stats && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <StatCard
+            title="Tổng Doanh Thu"
+            value={formatPrice(stats.totalRevenue)}
+            icon="💰"
+            color="border-green-500"
           />
-          <StatCard 
-            title="Tổng số sản phẩm" 
-            value={stats.productCount} 
+          <StatCard
+            title="Sản Phẩm"
+            value={stats.productCount}
             icon="📦"
-            colorClass="border-l-4 border-green-500"
+            color="border-blue-500"
           />
-          <StatCard 
-            title="Tổng số đơn hàng" 
-            value={stats.orderCount} 
-            icon="🛒"
-            colorClass="border-l-4 border-yellow-500"
+          <StatCard
+            title="Đơn Hàng Chờ"
+            value={stats.pendingOrdersCount}
+            icon="⏳"
+            color="border-yellow-500"
+          />
+          <StatCard
+            title="Người Dùng"
+            value={stats.userCount}
+            icon="👥"
+            color="border-purple-500"
           />
         </div>
       )}
+
+      {/* Bạn có thể thêm các biểu đồ hoặc bảng dữ liệu khác ở đây */}
     </div>
   );
 };

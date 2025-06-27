@@ -68,14 +68,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const register = async (name, email, password) => {
+  const register = async (username, name, email, password) => {
     try {
-      await axios.post('http://localhost:8080/api/auth/register', { name, email, password });
+      await axios.post('http://localhost:8080/api/auth/register', { username, name, email, password });
       alert('Đăng ký thành công! Vui lòng đăng nhập.');
       navigate('/login');
     } catch (error) {
       console.error("Lỗi đăng ký:", error);
-      alert('Đăng ký thất bại! Email có thể đã được sử dụng.');
+      alert('Đăng ký thất bại! Email hoặc username có thể đã được sử dụng.');
     }
   };
 

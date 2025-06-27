@@ -42,7 +42,7 @@ const Navbar = () => {
             <div className="container mx-auto px-4 md:px-6">
                 <div className="flex justify-between items-center py-4">
                     <Link to="/" className="text-3xl font-bold text-blue-600 tracking-tight">
-                        MyShop
+                        Áo dài may sẵn cô Định
                     </Link>
                     <nav className="hidden md:flex items-center space-x-8 text-lg">
                         <NavLink to="/" style={({ isActive }) => (isActive ? activeLinkStyle : undefined)} className="text-gray-600 hover:text-blue-600 transition-colors">
