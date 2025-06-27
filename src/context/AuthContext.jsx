@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }) => {
   
   const login = async (email, password) => {
     try {
-      const response = await axios.post('http://localhost:8080/api/auth/login', { email, password });
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/api/auth/login`, { email, password });
       setToken(response.data.token);
       // Kiểm tra vai trò và chuyển hướng
       const decodedUser = jwtDecode(response.data.token);
@@ -70,7 +70,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (username, name, email, password) => {
     try {
-      await axios.post('http://localhost:8080/api/auth/register', { username, name, email, password });
+      await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/api/auth/register`, { username, name, email, password });
       alert('Đăng ký thành công! Vui lòng đăng nhập.');
       navigate('/login');
     } catch (error) {

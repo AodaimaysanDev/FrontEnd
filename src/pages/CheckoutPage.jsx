@@ -40,7 +40,7 @@ const CheckoutPage = () => {
           Authorization: `Bearer ${token}`,
         },
       };
-      await axios.post('http://localhost:8080/api/orders', orderData, config);
+      await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/api/orders`, orderData, config);
       clearCart();
       navigate('/order-success');
     } catch (error) {

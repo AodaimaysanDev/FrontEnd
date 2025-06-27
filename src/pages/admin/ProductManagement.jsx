@@ -17,7 +17,7 @@ const ProductManagement = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:8080/api/products');
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/api/products`);
       setProducts(response.data);
       setError(null);
     } catch (err) {
@@ -45,7 +45,7 @@ const ProductManagement = () => {
   const handleDelete = async (productId) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?')) {
       try {
-        await axios.delete(`http://localhost:8080/api/products/${productId}`, {
+        await axios.delete(`${import.meta.env.VITE_BACKEND_API_URL}/api/products/${productId}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         alert('Sản phẩm đã được xóa thành công!');

@@ -17,7 +17,7 @@ const OrderDetailPage = () => {
             try {
                 setLoading(true);
                 const config = { headers: { Authorization: `Bearer ${token}` } };
-                const { data } = await axios.get(`http://localhost:8080/api/orders/${id}`, config);
+                const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/api/orders/${id}`, config);
                 if (data.success) {
                     setOrder(data.order);
                 } else {

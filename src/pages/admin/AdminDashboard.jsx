@@ -27,7 +27,7 @@ const AdminDashboard = () => {
       try {
         setLoading(true);
         const config = { headers: { Authorization: `Bearer ${token}` } };
-        const { data } = await axios.get('http://localhost:8080/api/stats', config);
+        const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/api/stats`, config);
         
         if (data.success) {
           setStats(data.stats);

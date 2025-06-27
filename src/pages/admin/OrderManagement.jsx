@@ -14,7 +14,7 @@ const OrderManagement = () => {
     try {
       setLoading(true);
       const config = { headers: { Authorization: `Bearer ${token}` } };
-      const { data } = await axios.get('http://localhost:8080/api/orders', config);
+      const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/api/orders`, config);
       setOrders(data.orders);
       setError(null);
     } catch (err) {
@@ -35,7 +35,7 @@ const OrderManagement = () => {
     }
     try {
       const config = { headers: { Authorization: `Bearer ${token}` } };
-      await axios.put(`http://localhost:8080/api/orders/${orderId}`, { status: newStatus }, config);
+      await axios.put(`${import.meta.env.VITE_BACKEND_API_URL}/api/orders/${orderId}`, { status: newStatus }, config);
       alert('Cập nhật trạng thái thành công!');
       fetchOrders(); // Tải lại danh sách
     } catch (err) {

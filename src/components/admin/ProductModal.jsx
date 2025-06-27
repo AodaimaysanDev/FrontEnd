@@ -47,10 +47,10 @@ const ProductModal = ({ product, onClose, onSuccess }) => {
       };
       
       if (product) {
-        await axios.put(`http://localhost:8080/api/products/${product._id}`, formData, config);
+        await axios.put(`${import.meta.env.VITE_BACKEND_API_URL}/api/products/${product._id}`, formData, config);
         alert('Cập nhật sản phẩm thành công!');
       } else {
-        await axios.post('http://localhost:8080/api/products', formData, config);
+        await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/api/products`, formData, config);
         alert('Thêm sản phẩm mới thành công!');
       }
       onSuccess();

@@ -13,7 +13,7 @@ const ProfilePage = () => {
     const fetchMyOrders = async () => {
       try {
         const config = { headers: { Authorization: `Bearer ${token}` } };
-        const { data } = await axios.get('http://localhost:8080/api/orders/myorders', config);
+        const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/api/orders/myorders`, config);
         setOrders(data.orders);
       } catch (error) {
         console.error("Lỗi khi lấy lịch sử đơn hàng:", error);

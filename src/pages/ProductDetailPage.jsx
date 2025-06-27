@@ -20,7 +20,7 @@ const ProductDetailPage = () => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`http://localhost:8080/api/products/${id}`);
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/api/products/${id}`);
         setProduct(response.data);
       } catch (err) {
         setError('Không tìm thấy sản phẩm hoặc đã có lỗi xảy ra.');
