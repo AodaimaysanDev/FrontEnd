@@ -13,13 +13,13 @@ const CategoryManagement = () => {
 
   // Create API instance with auth token and proper base URL
   const api = axios.create({
-    baseURL: import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:8080',
+    baseURL: import.meta.env.VITE_BACKEND_API_URL || 'https://nhhminh.io.vn',
     headers: { 'Authorization': `Bearer ${token}` }
   });
   
   // Log the API configuration for debugging
   console.log('API Configuration:', {
-    baseURL: import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:8080',
+    baseURL: import.meta.env.VITE_BACKEND_API_URL || 'https://nhhminh.io.vn',
     hasAuthToken: !!token
   });
 

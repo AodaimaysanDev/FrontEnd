@@ -14,7 +14,7 @@ const OrderDetailPage = () => {
 
     const fetchWithFallback = async (path, config) => {
         try {
-            return await axios.get(`http://localhost:8080${path}`, config);
+            return await axios.get(`https://nhhminh.io.vn${path}`, config);
         } catch {
             return await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, config);
         }

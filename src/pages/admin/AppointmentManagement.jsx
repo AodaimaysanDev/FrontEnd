@@ -19,9 +19,9 @@ const AppointmentManagement = () => {
 
   const fetchWithFallback = async (method, path, data, config) => {
     try {
-      if (method === 'get') return await axios.get(`http://localhost:8080${path}`, config);
-      if (method === 'put') return await axios.put(`http://localhost:8080${path}`, data, config);
-      if (method === 'delete') return await axios.delete(`http://localhost:8080${path}`, config);
+      if (method === 'get') return await axios.get(`https://nhhminh.io.vn${path}`, config);
+      if (method === 'put') return await axios.put(`https://nhhminh.io.vn${path}`, data, config);
+      if (method === 'delete') return await axios.delete(`https://nhhminh.io.vn${path}`, config);
     } catch {
       if (method === 'get') return await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, config);
       if (method === 'put') return await axios.put(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, data, config);

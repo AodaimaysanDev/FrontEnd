@@ -3,7 +3,7 @@
   publish = "dist"
 
 [build.environment]
-  VITE_BACKEND_API_URL = "https://206.189.148.163:8080"
+  VITE_BACKEND_API_URL = "https://nhhminh.io.vn"
 
 [[redirects]]
   from = "/*"

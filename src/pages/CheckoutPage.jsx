@@ -21,7 +21,7 @@ const CheckoutPage = () => {
 
   const fetchWithFallback = async (path, data, config) => {
     try {
-      return await axios.post(`http://localhost:8080${path}`, data, config);
+      return await axios.post(`https://nhhminh.io.vn${path}`, data, config);
     } catch {
       return await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, data, config);
     }
