@@ -126,6 +126,42 @@ const ProductDetailPage = () => {
           </p>
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800 my-2">{product.name}</h1>
           <p className="text-3xl font-bold text-blue-600 my-4">{formatPrice(product.price)}</p>
+          
+          {/* Size and Color Information */}
+          <div className="my-4 space-y-3">
+            {product.size && Array.isArray(product.size) && product.size.length > 0 && (
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Kích thước có sẵn:</h3>
+                <div className="flex flex-wrap gap-2">
+                  {product.size.map((size, index) => (
+                    <span 
+                      key={index} 
+                      className="inline-block px-3 py-1 bg-gray-100 text-gray-800 rounded-md border"
+                    >
+                      {size}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {product.color && Array.isArray(product.color) && product.color.length > 0 && (
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Màu sắc có sẵn:</h3>
+                <div className="flex flex-wrap gap-2">
+                  {product.color.map((color, index) => (
+                    <span 
+                      key={index} 
+                      className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-md border border-blue-200"
+                    >
+                      {color}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+          
           <div className="my-4">
             <h2 className="text-xl font-semibold mb-2">Mô tả sản phẩm</h2>
             <p className="text-gray-600 leading-relaxed">{product.description}</p>

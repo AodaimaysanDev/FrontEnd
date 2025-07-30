@@ -52,6 +52,37 @@ const ProductCard = ({ product }) => {
         <h3 className="text-lg font-semibold text-gray-800 truncate mb-2" title={product.name}>
           {product.name}
         </h3>
+        
+        {/* Size and Color Information */}
+        <div className="mb-3 space-y-1">
+          {product.size && Array.isArray(product.size) && product.size.length > 0 && (
+            <div className="flex flex-wrap gap-1">
+              <span className="text-xs text-gray-600">Size:</span>
+              {product.size.slice(0, 3).map((size, index) => (
+                <span key={index} className="inline-block px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded">
+                  {size}
+                </span>
+              ))}
+              {product.size.length > 3 && (
+                <span className="text-xs text-gray-500">+{product.size.length - 3}</span>
+              )}
+            </div>
+          )}
+          {product.color && Array.isArray(product.color) && product.color.length > 0 && (
+            <div className="flex flex-wrap gap-1">
+              <span className="text-xs text-gray-600">Màu:</span>
+              {product.color.slice(0, 2).map((color, index) => (
+                <span key={index} className="inline-block px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded">
+                  {color}
+                </span>
+              ))}
+              {product.color.length > 2 && (
+                <span className="text-xs text-gray-500">+{product.color.length - 2}</span>
+              )}
+            </div>
+          )}
+        </div>
+        
         <div className="mt-auto">
           <p className="text-xl font-bold text-blue-600 mb-4">
             {formatPrice(product.price)}

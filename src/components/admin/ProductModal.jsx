@@ -143,12 +143,52 @@ const ProductModal = ({ product, onClose, onSuccess }) => {
                   <input type="number" name="stock" id="stock" value={formData.stock} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"/>
               </div>
               <div className="mb-4">
-                  <label htmlFor="size" className="block text-sm font-medium text-gray-700">Size (cách nhau bởi dấu phẩy)</label>
-                  <input type="text" name="size" id="size" value={Array.isArray(formData.size) ? formData.size.join(', ') : ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"/>
+                  <label htmlFor="size" className="block text-sm font-medium text-gray-700">
+                    Kích thước 
+                    <span className="text-xs text-gray-500">(VD: S, M, L, XL - cách nhau bởi dấu phẩy)</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    name="size" 
+                    id="size" 
+                    value={Array.isArray(formData.size) ? formData.size.join(', ') : ''} 
+                    onChange={handleChange} 
+                    placeholder="S, M, L, XL"
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  />
+                  {formData.size && formData.size.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      {formData.size.map((size, index) => (
+                        <span key={index} className="inline-block px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">
+                          {size}
+                        </span>
+                      ))}
+                    </div>
+                  )}
               </div>
               <div className="mb-4">
-                  <label htmlFor="color" className="block text-sm font-medium text-gray-700">Màu sắc (cách nhau bởi dấu phẩy)</label>
-                  <input type="text" name="color" id="color" value={Array.isArray(formData.color) ? formData.color.join(', ') : ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"/>
+                  <label htmlFor="color" className="block text-sm font-medium text-gray-700">
+                    Màu sắc 
+                    <span className="text-xs text-gray-500">(VD: Đỏ, Xanh, Vàng - cách nhau bởi dấu phẩy)</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    name="color" 
+                    id="color" 
+                    value={Array.isArray(formData.color) ? formData.color.join(', ') : ''} 
+                    onChange={handleChange} 
+                    placeholder="Đỏ, Xanh, Vàng"
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  />
+                  {formData.color && formData.color.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      {formData.color.map((color, index) => (
+                        <span key={index} className="inline-block px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
+                          {color}
+                        </span>
+                      ))}
+                    </div>
+                  )}
               </div>
               <div className="md:col-span-2 mb-4">
                   <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700">URL Hình ảnh chính (Backward compatibility)</label>
