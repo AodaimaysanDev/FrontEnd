@@ -51,21 +51,30 @@ const ProductModal = ({ product, onClose, onSuccess }) => {
         category: product.category?._id || product.category || '',
         stock: product.stock || '',
         imageUrl: product.imageUrl || '',
-        images: product.images || [],
-        size: product.size || [],
-        color: product.color || [],
+        images: Array.isArray(product.images) ? product.images : [],
+        size: Array.isArray(product.size) ? product.size : [],
+        color: Array.isArray(product.color) ? product.color : [],
       });
     } else {
-        setFormData({
-            name: '', description: '', price: '', category: '', stock: '', imageUrl: '', images: [], size: [], color: []
-        });
+      setFormData({
+        name: '', 
+        description: '', 
+        price: '', 
+        category: '', 
+        stock: '', 
+        imageUrl: '', 
+        images: [], 
+        size: [], 
+        color: []
+      });
     }
   }, [product, categories]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === 'size' || name === 'color') {
-      setFormData(prev => ({ ...prev, [name]: value.split(',').map(s => s.trim()).filter(Boolean) }));
+      const arrayValue = value.split(',').map(s => s.trim()).filter(Boolean);
+      setFormData(prev => ({ ...prev, [name]: arrayValue }));
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
@@ -100,6 +109,10 @@ const ProductModal = ({ product, onClose, onSuccess }) => {
       if (dataToSend.category === '') {
           delete dataToSend.category;
       }
+
+      // Ensure size and color are properly formatted arrays
+      dataToSend.size = Array.isArray(dataToSend.size) ? dataToSend.size.filter(s => s && s.trim()) : [];
+      dataToSend.color = Array.isArray(dataToSend.color) ? dataToSend.color.filter(c => c && c.trim()) : [];
 
       if (product) {
         await fetchWithFallback('put', `/api/products/${product._id}`, dataToSend, config);
@@ -145,7 +158,7 @@ const ProductModal = ({ product, onClose, onSuccess }) => {
               <div className="mb-4">
                   <label htmlFor="size" className="block text-sm font-medium text-gray-700">
                     Kích thước 
-                    <span className="text-xs text-gray-500">(VD: S, M, L, XL - cách nhau bởi dấu phẩy)</span>
+                    <span className="text-xs text-gray-500">(Nhập các kích thước cách nhau bởi dấu phẩy, VD: S, M, L, XL)</span>
                   </label>
                   <input 
                     type="text" 
@@ -153,23 +166,26 @@ const ProductModal = ({ product, onClose, onSuccess }) => {
                     id="size" 
                     value={Array.isArray(formData.size) ? formData.size.join(', ') : ''} 
                     onChange={handleChange} 
-                    placeholder="S, M, L, XL"
+                    placeholder="Nhập kích thước: S, M, L, XL"
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                   />
                   {formData.size && formData.size.length > 0 && (
-                    <div className="mt-2 flex flex-wrap gap-1">
-                      {formData.size.map((size, index) => (
-                        <span key={index} className="inline-block px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">
-                          {size}
-                        </span>
-                      ))}
+                    <div className="mt-2">
+                      <div className="text-xs text-gray-600 mb-1">Kích thước đã thêm:</div>
+                      <div className="flex flex-wrap gap-1">
+                        {formData.size.map((size, index) => (
+                          <span key={index} className="inline-block px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs border">
+                            {size}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   )}
               </div>
               <div className="mb-4">
                   <label htmlFor="color" className="block text-sm font-medium text-gray-700">
                     Màu sắc 
-                    <span className="text-xs text-gray-500">(VD: Đỏ, Xanh, Vàng - cách nhau bởi dấu phẩy)</span>
+                    <span className="text-xs text-gray-500">(Nhập các màu sắc cách nhau bởi dấu phẩy, VD: Đỏ, Xanh, Vàng)</span>
                   </label>
                   <input 
                     type="text" 
@@ -177,16 +193,19 @@ const ProductModal = ({ product, onClose, onSuccess }) => {
                     id="color" 
                     value={Array.isArray(formData.color) ? formData.color.join(', ') : ''} 
                     onChange={handleChange} 
-                    placeholder="Đỏ, Xanh, Vàng"
+                    placeholder="Nhập màu sắc: Đỏ, Xanh, Vàng"
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                   />
                   {formData.color && formData.color.length > 0 && (
-                    <div className="mt-2 flex flex-wrap gap-1">
-                      {formData.color.map((color, index) => (
-                        <span key={index} className="inline-block px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
-                          {color}
-                        </span>
-                      ))}
+                    <div className="mt-2">
+                      <div className="text-xs text-gray-600 mb-1">Màu sắc đã thêm:</div>
+                      <div className="flex flex-wrap gap-1">
+                        {formData.color.map((color, index) => (
+                          <span key={index} className="inline-block px-2 py-1 bg-green-100 text-green-700 rounded text-xs border">
+                            {color}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   )}
               </div>
