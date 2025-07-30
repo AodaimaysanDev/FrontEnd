@@ -71,16 +71,6 @@ const ProductManagement = () => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
   };
 
-  if (loading) {
-      return (
-          <div className="flex justify-center items-center h-64">
-              <Spinner />
-          </div>
-      );
-  }
-  
-  if (error) return <p className="text-center text-red-500 text-lg">{error}</p>;
-
   return (
     <div className="p-4 bg-white rounded-lg shadow-md">
       <div className="flex justify-between items-center mb-6">
@@ -93,7 +83,31 @@ const ProductManagement = () => {
         </button>
       </div>
 
-      {products.length > 0 ? (
+      {loading && (
+        <div className="flex justify-center items-center h-64">
+          <Spinner />
+        </div>
+      )}
+      
+      {error && (
+        <div className="text-center py-16">
+          <div className="mb-4">
+            <svg className="mx-auto h-16 w-16 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Có lỗi xảy ra</h3>
+          <p className="text-red-500 mb-6">{error}</p>
+          <button
+            onClick={fetchProducts}
+            className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 font-semibold"
+          >
+            Thử lại
+          </button>
+        </div>
+      )}
+
+      {!loading && !error && products.length > 0 ? (
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -135,7 +149,7 @@ const ProductManagement = () => {
             </tbody>
           </table>
         </div>
-      ) : (
+      ) : !loading && !error ? (
         <div className="text-center py-16">
           <div className="mb-4">
             <svg className="mx-auto h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -151,7 +165,7 @@ const ProductManagement = () => {
             Thêm sản phẩm đầu tiên
           </button>
         </div>
-      )}
+      ) : null}
       
       {isModalOpen && (
         <ProductModal
