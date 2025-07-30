@@ -25,6 +25,7 @@ import ProductManagement from './pages/admin/ProductManagement';
 import OrderManagement from './pages/admin/OrderManagement'; 
 import OrderDetailPage from './pages/OrderDetailPage';
 import AppointmentManagement from './pages/admin/AppointmentManagement';
+import CategoryManagement from './pages/admin/CategoryManagement';
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route index element={<Navigate to="/admin/dashboard" replace />} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="products" element={<ProductManagement />} />
+          <Route path="categories" element={<CategoryManagement />} />
           <Route path="orders" element={<OrderManagement />} /> {/* <-- Route mới */}
           <Route path="order/:id" element={<OrderDetailPage />} />
           <Route path="appointments" element={<AppointmentManagement />} />

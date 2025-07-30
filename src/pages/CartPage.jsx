@@ -7,6 +7,13 @@ const CartPage = () => {
   
   const formatPrice = (price) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
 
+  const getItemImage = (item) => {
+    if (item.images && item.images.length > 0) {
+      return item.images[0];
+    }
+    return item.imageUrl || `https://placehold.co/100x100`;
+  };
+
   const cartTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
   if (cartItems.length === 0) {
@@ -29,7 +36,7 @@ const CartPage = () => {
         <div className="lg:col-span-2">
           {cartItems.map(item => (
             <div key={item._id} className="flex items-center border-b py-4">
-              <img src={item.imageUrl || `https://placehold.co/100x100`} alt={item.name} className="w-24 h-24 object-cover rounded-md mr-4"/>
+              <img src={getItemImage(item)} alt={item.name} className="w-24 h-24 object-cover rounded-md mr-4"/>
               <div className="flex-grow">
                 <h2 className="text-lg font-semibold">{item.name}</h2>
                 <p className="text-gray-500">{formatPrice(item.price)}</p>

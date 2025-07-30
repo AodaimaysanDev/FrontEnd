@@ -27,8 +27,22 @@ const ProductsPage = () => {
         setLoading(true);
         const response = await fetchWithFallback('/api/products');
         setProducts(response.data);
+        
         // Lấy danh sách danh mục duy nhất từ sản phẩm
-        const uniqueCategories = Array.from(new Set(response.data.map(p => p.category).filter(Boolean)));
+        // Xử lý cả trường hợp category là object hoặc string
+        const processedCategories = response.data.map(p => {
+          if (typeof p.category === 'object' && p.category !== null) {
+            return { id: p.category._id, name: p.category.name };
+          } else {
+            return { id: p.category, name: p.category };
+          }
+        }).filter(Boolean);
+        
+        // Lọc các category trùng lặp dựa trên id
+        const uniqueCategories = Array.from(
+          new Map(processedCategories.map(item => [item.id, item])).values()
+        );
+        
         setCategories(uniqueCategories);
         setError(null);
       } catch (err) {
@@ -44,7 +58,13 @@ const ProductsPage = () => {
   // Lọc sản phẩm theo danh mục
   const filteredProducts = selectedCategory === 'Tất cả'
     ? products
-    : products.filter(product => product.category === selectedCategory);
+    : products.filter(product => {
+        if (typeof product.category === 'object' && product.category !== null) {
+          return product.category._id === selectedCategory;
+        } else {
+          return product.category === selectedCategory;
+        }
+      });
 
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
@@ -76,7 +96,7 @@ const ProductsPage = () => {
         >
           <option value="Tất cả">Tất cả</option>
           {categories.map(category => (
-            <option key={category} value={category}>{category}</option>
+            <option key={category.id} value={category.id}>{category.name}</option>
           ))}
         </select>
       </div>

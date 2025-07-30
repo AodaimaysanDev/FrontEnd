@@ -33,6 +33,11 @@ const AdminSidebar = () => {
               </NavLink>
             </li>
             <li className="mb-2">
+              <NavLink to="/admin/categories" style={({isActive}) => isActive ? activeStyle : undefined} className="block px-4 py-2 rounded-md hover:bg-gray-700 transition-colors">
+                Quản lý Danh mục
+              </NavLink>
+            </li>
+            <li className="mb-2">
               <NavLink to="/admin/orders" style={({isActive}) => isActive ? activeStyle : undefined} className="block px-4 py-2 rounded-md hover:bg-gray-700 transition-colors">
                 Quản lý Đơn hàng
               </NavLink>
@@ -45,7 +50,10 @@ const AdminSidebar = () => {
           </ul>
         </nav>
       </div>
-      <div className="mt-auto">
+      <div className="mt-auto space-y-2">
+        <NavLink to="/" className="block w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors text-center">
+          Trở về trang chủ
+        </NavLink>
         <button onClick={handleLogout} className="w-full bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors">
           Đăng xuất
         </button>

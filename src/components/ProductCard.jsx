@@ -12,7 +12,15 @@ const ProductCard = ({ product }) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
   };
   
-  const imageUrl = product.imageUrl || `https://placehold.co/600x400/e2e8f0/e2e8f0?text=Image`;
+  // Lấy hình ảnh đầu tiên từ mảng images, nếu không có thì dùng imageUrl, nếu vẫn không có thì dùng placeholder
+  const getProductImage = () => {
+    if (product.images && product.images.length > 0) {
+      return product.images[0];
+    }
+    return product.imageUrl || `https://placehold.co/600x400/e2e8f0/e2e8f0?text=Image`;
+  };
+  
+  const imageUrl = getProductImage();
 
   const handleAddToCart = (e) => {
     e.preventDefault(); // Ngăn thẻ Link bên ngoài hoạt động khi bấm nút
@@ -36,7 +44,11 @@ const ProductCard = ({ product }) => {
         />
       </div>
       <div className="p-5 flex flex-col">
-        <p className="text-sm text-gray-500 mb-1">{product.category}</p>
+        <p className="text-sm text-gray-500 mb-1">
+          {typeof product.category === 'object' && product.category !== null 
+            ? product.category.name 
+            : product.category}
+        </p>
         <h3 className="text-lg font-semibold text-gray-800 truncate mb-2" title={product.name}>
           {product.name}
         </h3>

@@ -112,7 +112,11 @@ const ProductManagement = () => {
                     <div className="text-sm font-medium text-gray-900">{product.name}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-700">{product.category}</div>
+                    <div className="text-sm text-gray-700">
+                      {typeof product.category === 'object' && product.category !== null 
+                        ? product.category.name || 'N/A'
+                        : product.category || 'N/A'}
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-700">{formatPrice(product.price)}</div>

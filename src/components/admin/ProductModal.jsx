@@ -9,10 +9,38 @@ const ProductModal = ({ product, onClose, onSuccess }) => {
     price: '',
     category: '',
     stock: '',
-    imageUrl: ''
+    imageUrl: '',
+    images: [],
+    size: [],
+    color: [],
   });
-  
+  const [categories, setCategories] = useState([]);
   const { token } = useAuth();
+
+  const fetchWithFallback = async (method, path, data, config) => {
+    try {
+      if (method === 'get') return await axios.get(`http://localhost:8080${path}`, config);
+      if (method === 'put') return await axios.put(`http://localhost:8080${path}`, data, config);
+      if (method === 'post') return await axios.post(`http://localhost:8080${path}`, data, config);
+    } catch {
+      if (method === 'get') return await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, config);
+      if (method === 'put') return await axios.put(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, data, config);
+      if (method === 'post') return await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, data, config);
+    }
+  };
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const config = { headers: { 'Authorization': `Bearer ${token}` } };
+        const response = await fetchWithFallback('get', '/api/categories', null, config);
+        setCategories(response.data);
+      } catch (error) {
+        console.error("Failed to fetch categories", error);
+      }
+    };
+    fetchCategories();
+  }, [token]);
 
   useEffect(() => {
     if (product) {
@@ -20,30 +48,42 @@ const ProductModal = ({ product, onClose, onSuccess }) => {
         name: product.name || '',
         description: product.description || '',
         price: product.price || '',
-        category: product.category || '',
+        category: product.category?._id || product.category || '',
         stock: product.stock || '',
-        imageUrl: product.imageUrl || ''
+        imageUrl: product.imageUrl || '',
+        images: product.images || [],
+        size: product.size || [],
+        color: product.color || [],
       });
     } else {
         setFormData({
-            name: '', description: '', price: '', category: '', stock: '', imageUrl: ''
+            name: '', description: '', price: '', category: '', stock: '', imageUrl: '', images: [], size: [], color: []
         });
     }
-  }, [product]);
+  }, [product, categories]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    if (name === 'size' || name === 'color') {
+      setFormData(prev => ({ ...prev, [name]: value.split(',').map(s => s.trim()).filter(Boolean) }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   };
 
-  const fetchWithFallback = async (method, path, data, config) => {
-    try {
-      if (method === 'put') return await axios.put(`http://localhost:8080${path}`, data, config);
-      if (method === 'post') return await axios.post(`http://localhost:8080${path}`, data, config);
-    } catch {
-      if (method === 'put') return await axios.put(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, data, config);
-      if (method === 'post') return await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}${path}`, data, config);
-    }
+  const handleImageAdd = () => {
+    setFormData(prev => ({ ...prev, images: [...prev.images, ''] }));
+  };
+
+  const handleImageChange = (index, value) => {
+    const newImages = [...formData.images];
+    newImages[index] = value;
+    setFormData(prev => ({ ...prev, images: newImages }));
+  };
+
+  const handleImageRemove = (index) => {
+    const newImages = formData.images.filter((_, i) => i !== index);
+    setFormData(prev => ({ ...prev, images: newImages }));
   };
 
   const handleSubmit = async (e) => {
@@ -56,11 +96,16 @@ const ProductModal = ({ product, onClose, onSuccess }) => {
         }
       };
       
+      const dataToSend = { ...formData };
+      if (dataToSend.category === '') {
+          delete dataToSend.category;
+      }
+
       if (product) {
-        await fetchWithFallback('put', `/api/products/${product._id}`, formData, config);
+        await fetchWithFallback('put', `/api/products/${product._id}`, dataToSend, config);
         alert('Cập nhật sản phẩm thành công!');
       } else {
-        await fetchWithFallback('post', '/api/products', formData, config);
+        await fetchWithFallback('post', '/api/products', dataToSend, config);
         alert('Thêm sản phẩm mới thành công!');
       }
       onSuccess();
@@ -82,7 +127,12 @@ const ProductModal = ({ product, onClose, onSuccess }) => {
               </div>
               <div className="mb-4">
                   <label htmlFor="category" className="block text-sm font-medium text-gray-700">Danh mục</label>
-                  <input type="text" name="category" id="category" value={formData.category} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"/>
+                  <select name="category" id="category" value={formData.category} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                      <option value="">-- Chọn danh mục --</option>
+                      {categories.map(cat => (
+                          <option key={cat._id} value={cat._id}>{cat.name}</option>
+                      ))}
+                  </select>
               </div>
               <div className="mb-4">
                   <label htmlFor="price" className="block text-sm font-medium text-gray-700">Giá</label>
@@ -92,10 +142,57 @@ const ProductModal = ({ product, onClose, onSuccess }) => {
                   <label htmlFor="stock" className="block text-sm font-medium text-gray-700">Số lượng tồn kho</label>
                   <input type="number" name="stock" id="stock" value={formData.stock} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"/>
               </div>
+              <div className="mb-4">
+                  <label htmlFor="size" className="block text-sm font-medium text-gray-700">Size (cách nhau bởi dấu phẩy)</label>
+                  <input type="text" name="size" id="size" value={Array.isArray(formData.size) ? formData.size.join(', ') : ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"/>
+              </div>
+              <div className="mb-4">
+                  <label htmlFor="color" className="block text-sm font-medium text-gray-700">Màu sắc (cách nhau bởi dấu phẩy)</label>
+                  <input type="text" name="color" id="color" value={Array.isArray(formData.color) ? formData.color.join(', ') : ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"/>
+              </div>
               <div className="md:col-span-2 mb-4">
-                  <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700">URL Hình ảnh</label>
+                  <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700">URL Hình ảnh chính (Backward compatibility)</label>
                   <input type="text" name="imageUrl" id="imageUrl" value={formData.imageUrl} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"/>
               </div>
+              
+              <div className="md:col-span-2 mb-4">
+                  <div className="flex justify-between items-center mb-2">
+                      <label className="block text-sm font-medium text-gray-700">Hình ảnh sản phẩm</label>
+                      <button type="button" onClick={handleImageAdd} className="bg-blue-500 text-white px-3 py-1 rounded-md text-sm hover:bg-blue-600">
+                          + Thêm ảnh
+                      </button>
+                  </div>
+                  {formData.images.map((image, index) => (
+                      <div key={index} className="flex gap-2 mb-2">
+                          <input 
+                              type="text" 
+                              value={image} 
+                              onChange={(e) => handleImageChange(index, e.target.value)}
+                              placeholder="URL hình ảnh"
+                              className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                          />
+                          {image && (
+                              <img 
+                                  src={image} 
+                                  alt={`Preview ${index + 1}`} 
+                                  className="w-10 h-10 object-cover rounded-md border"
+                                  onError={(e) => { e.target.style.display = 'none'; }}
+                              />
+                          )}
+                          <button 
+                              type="button" 
+                              onClick={() => handleImageRemove(index)}
+                              className="bg-red-500 text-white px-3 py-2 rounded-md hover:bg-red-600"
+                          >
+                              Xóa
+                          </button>
+                      </div>
+                  ))}
+                  {formData.images.length === 0 && (
+                      <p className="text-sm text-gray-500 italic">Chưa có hình ảnh nào. Nhấp "Thêm ảnh" để thêm hình ảnh.</p>
+                  )}
+              </div>
+              
               <div className="md:col-span-2 mb-4">
                   <label htmlFor="description" className="block text-sm font-medium text-gray-700">Mô tả</label>
                   <textarea name="description" id="description" rows="4" value={formData.description} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></textarea>
