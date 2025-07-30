@@ -6,6 +6,7 @@ import MainLayout from './layouts/MainLayout';
 import AdminLayout from './layouts/AdminLayout';
 import AdminRoute from './components/admin/AdminRoute';
 import ProtectedRoute from './components/ProtectedRoute';
+import ScrollToTop from './components/ScrollToTop';
 
 // Pages
 import HomePage from './pages/HomePage';
@@ -29,7 +30,9 @@ import CategoryManagement from './pages/admin/CategoryManagement';
 
 function App() {
   return (
-    <Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
       {/* KHU VỰC ADMIN */}
       <Route element={<AdminRoute />}>
         <Route path="/admin" element={<AdminLayout />}>
@@ -63,6 +66,7 @@ function App() {
         <Route path="*" element={<div>404 - Trang không tồn tại</div>} />
       </Route>
     </Routes>
+    </>
   );
 }
 export default App;
