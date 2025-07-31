@@ -1,10 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import ProductCard from '../components/ProductCard';
 import Spinner from '../components/Spinner';
 import Pagination from '../components/Pagination';
+import useScrollToTop from '../hooks/useScrollToTop';
+import { useLocation } from 'react-router-dom';
 
 const ProductsPage = () => {
+  // Apply scroll to top effect on page load and navigation with priority
+  useScrollToTop();
+  
+  // Track if page is loaded
+  const isInitialMount = useRef(true);
+  
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

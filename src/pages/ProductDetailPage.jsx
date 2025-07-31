@@ -1,11 +1,16 @@
-import React, { useState, useEffect } from 'react';
+  import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom'; // <-- Import useNavigate
 import axios from 'axios';
 import Spinner from '../components/Spinner';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext'; // <-- Import useAuth
+import useScrollToTop from '../hooks/useScrollToTop'; // <-- Import useScrollToTop hook
 
 const ProductDetailPage = () => {
+  // Apply scroll to top effect on page load and navigation
+  // This is all we need for proper scrolling behavior
+  useScrollToTop();
+  
   const { id } = useParams();
   const navigate = useNavigate(); // <-- Hook để điều hướng
   
